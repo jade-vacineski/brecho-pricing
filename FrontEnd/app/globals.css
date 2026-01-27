@@ -1,13 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Space+Grotesk:wght@400;500;600&display=swap');
 
 :root {
-  --bg-1: #f7f3ed;
-  --bg-2: #f0e7da;
-  --ink-1: #1f1c17;
-  --ink-2: #4a4035;
-  --accent: #c67b3a;
-  --card: #fff9f1;
-  --line: #e8dccb;
+  --bg-1: #f5f6f8;
+  --bg-2: #e7eaef;
+  --ink-1: #1b1f26;
+  --ink-2: #5c6472;
+  --accent: #232831;
+  --card: #ffffff;
+  --line: #d7dbe2;
 }
 
 * {
@@ -19,8 +19,10 @@ body {
   padding: 0;
   margin: 0;
   color: var(--ink-1);
-  background: radial-gradient(1200px 600px at 15% -10%, var(--bg-2), transparent 70%),
-    linear-gradient(180deg, var(--bg-1), #fff);
+  background:
+    radial-gradient(900px 500px at 10% -10%, #e1e5ee, transparent 70%),
+    radial-gradient(800px 500px at 90% 10%, #f0f2f6, transparent 60%),
+    linear-gradient(180deg, var(--bg-1), #ffffff);
   font-family: "Space Grotesk", sans-serif;
 }
 
@@ -74,7 +76,7 @@ main {
   border: 1px solid var(--line);
   border-radius: 16px;
   padding: 24px;
-  box-shadow: 0 8px 30px rgba(31, 28, 23, 0.08);
+  box-shadow: 0 14px 30px rgba(20, 24, 31, 0.08);
 }
 
 .form {
@@ -98,13 +100,14 @@ select {
   border: 1px solid var(--line);
   border-radius: 10px;
   padding: 12px 14px;
-  background: #fff;
+  background: #ffffff;
+  color: var(--ink-1);
   font-size: 1rem;
 }
 
 input:focus,
 select:focus {
-  outline: 2px solid color-mix(in srgb, var(--accent), #fff 40%);
+  outline: 2px solid color-mix(in srgb, var(--accent), #fff 60%);
   border-color: var(--accent);
 }
 
@@ -119,7 +122,7 @@ button {
   border-radius: 999px;
   padding: 12px 18px;
   background: var(--accent);
-  color: #fff;
+  color: #ffffff;
   font-weight: 600;
   cursor: pointer;
 }
@@ -153,7 +156,7 @@ button {
   gap: 8px;
   padding: 6px 10px;
   border-radius: 999px;
-  background: #fff;
+  background: #ffffff;
   border: 1px solid var(--line);
   color: var(--ink-2);
   font-size: 0.85rem;

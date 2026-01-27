@@ -30,7 +30,7 @@ export default function Page() {
       <div className="container">
         <section className="brand">
           <span className="badge">Precificação inteligente</span>
-          <h1>Brechó Pricing</h1>
+          <h1>SecondPrice</h1>
           <p>
             Gere um preço sugerido pela IA usando custo de compra, condição,
             categoria e marca. Minimalista, direto e fácil de ajustar.
