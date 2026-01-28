@@ -10,6 +10,12 @@ const formatMoney = (value: number) =>
     currency: 'BRL',
   }).format(value);
 
+const getAuthHeader = () => {
+  if (typeof window === 'undefined') return {};
+  const token = window.localStorage.getItem('auth_token');
+  return token ? { Authorization: `Bearer ${token}` } : {};
+};
+
 type PriceCalculatorProps = {
   variant?: 'default' | 'compact';
 };
@@ -176,16 +182,22 @@ export default function PriceCalculator({ variant = 'default' }: PriceCalculator
                   setStatusMessage('Informe um custo válido maior que zero.');
                   return;
                 }
-                try {
-                  setStatus('saving');
-                  const response = await fetch(`${API_URL}/items`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                      name: name.trim(),
-                      description: description.trim(),
-                      brand: brand.trim() || undefined,
-                      category,
+                  try {
+                    const authHeader = getAuthHeader();
+                    if (!authHeader.Authorization) {
+                      setStatus('error');
+                      setStatusMessage('Faça login para salvar itens.');
+                      return;
+                    }
+                    setStatus('saving');
+                    const response = await fetch(`${API_URL}/items`, {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json', ...authHeader },
+                      body: JSON.stringify({
+                        name: name.trim(),
+                        description: description.trim(),
+                        brand: brand.trim() || undefined,
+                        category,
                       condition,
                       gender,
                       basePrice: base,
@@ -237,16 +249,22 @@ export default function PriceCalculator({ variant = 'default' }: PriceCalculator
                   setStatusMessage('Informe um custo válido maior que zero.');
                   return;
                 }
-                try {
-                  setIsSimulating(true);
-                  const response = await fetch(`${API_URL}/items/price`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                      name: name.trim(),
-                      description: description.trim(),
-                      brand: brand.trim() || undefined,
-                      category,
+                  try {
+                    const authHeader = getAuthHeader();
+                    if (!authHeader.Authorization) {
+                      setStatus('error');
+                      setStatusMessage('Faça login para simular preço.');
+                      return;
+                    }
+                    setIsSimulating(true);
+                    const response = await fetch(`${API_URL}/items/price`, {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json', ...authHeader },
+                      body: JSON.stringify({
+                        name: name.trim(),
+                        description: description.trim(),
+                        brand: brand.trim() || undefined,
+                        category,
                       condition,
                       gender,
                       basePrice: base,
