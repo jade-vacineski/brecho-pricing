@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000';
 
@@ -24,6 +24,25 @@ export default function Page() {
   const [aiRationale, setAiRationale] = useState('');
   const [aiUsed, setAiUsed] = useState<boolean | null>(null);
   const [isSimulating, setIsSimulating] = useState(false);
+
+  const CategoryOptions = [
+    { value: 'CLOTHING', label: 'Roupas' },
+    { value: 'FOOTWEAR', label: 'Calçados' },
+    { value: 'ACCESSORY', label: 'Acessórios' },
+    { value: 'BAGS', label: 'Bolsas' },
+  ];
+
+  const ConditionOptions = [
+    { value: 'NEW', label: 'Novo' },
+    { value: 'PREOWNED', label: 'Seminovo' },
+    { value: 'USED', label: 'Usado' },
+  ];
+
+  const GenderOptions = [
+    { value: 'FEMALE', label: 'Feminino' },
+    { value: 'MALE', label: 'Masculino' },
+    { value: 'OTHER', label: 'Outro' },
+  ];
 
   return (
     <main>
@@ -90,42 +109,32 @@ export default function Page() {
 
             <div className="field">
               <label htmlFor="category">Categoria</label>
-              <select
+              <CustomSelect
                 id="category"
                 value={category}
-                onChange={(event) => setCategory(event.target.value)}
-              >
-                <option value="CLOTHING">Roupas</option>
-                <option value="FOOTWEAR">Calçados</option>
-                <option value="ACCESSORY">Acessórios</option>
-                <option value="BAGS">Bolsas</option>
-              </select>
+                options={CategoryOptions}
+                onChange={setCategory}
+              />
             </div>
 
             <div className="field">
               <label htmlFor="condition">Condição</label>
-              <select
+              <CustomSelect
                 id="condition"
                 value={condition}
-                onChange={(event) => setCondition(event.target.value)}
-              >
-                <option value="NEW">Novo</option>
-                <option value="PREOWNED">Seminovo</option>
-                <option value="USED">Usado</option>
-              </select>
+                options={ConditionOptions}
+                onChange={setCondition}
+              />
             </div>
 
             <div className="field">
               <label htmlFor="gender">Gênero</label>
-              <select
+              <CustomSelect
                 id="gender"
                 value={gender}
-                onChange={(event) => setGender(event.target.value)}
-              >
-                <option value="FEMALE">Feminino</option>
-                <option value="MALE">Masculino</option>
-                <option value="OTHER">Outro</option>
-              </select>
+                options={GenderOptions}
+                onChange={setGender}
+              />
             </div>
 
             <div className="field">
@@ -302,5 +311,71 @@ export default function Page() {
         </section>
       </div>
     </main>
+  );
+}
+
+type SelectOption = {
+  value: string;
+  label: string;
+};
+
+type CustomSelectProps = {
+  id: string;
+  value: string;
+  options: SelectOption[];
+  onChange: (value: string) => void;
+};
+
+function CustomSelect({ id, value, options, onChange }: CustomSelectProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  const selected = options.find((option) => option.value === value) ?? options[0];
+
+  useEffect(() => {
+    const handleOutside = (event: MouseEvent) => {
+      if (!rootRef.current) return;
+      if (!rootRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleOutside);
+    return () => document.removeEventListener('mousedown', handleOutside);
+  }, []);
+
+  return (
+    <div className="select" ref={rootRef}>
+      <button
+        id={id}
+        type="button"
+        className="select-trigger"
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
+        onClick={() => setIsOpen((prev) => !prev)}
+      >
+        <span className="select-value">{selected?.label ?? 'Selecione'}</span>
+        <span className="select-caret" aria-hidden="true">
+          ▾
+        </span>
+      </button>
+      {isOpen && (
+        <div className="select-menu" role="listbox" aria-labelledby={id}>
+          {options.map((option) => (
+            <button
+              key={option.value}
+              type="button"
+              className={`select-option${option.value === value ? ' active' : ''}`}
+              role="option"
+              aria-selected={option.value === value}
+              onClick={() => {
+                onChange(option.value);
+                setIsOpen(false);
+              }}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
