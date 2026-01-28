@@ -2,7 +2,11 @@
 
 import { useState } from 'react';
 
-import PriceCalculator from '../components/PriceCalculator';
+import AdminHeader from './components/AdminHeader';
+import AdminKpis from './components/AdminKpis';
+import AdminTable from './components/AdminTable';
+import EmptyState from './components/EmptyState';
+import PricingModal from './components/PricingModal';
 
 const kpis = [
   { label: 'Disponíveis', value: '128' },
@@ -64,105 +68,16 @@ export default function AdminPage() {
   return (
     <main className="admin-simple">
       <div className="admin-simple-shell">
-        <header className="admin-simple-header">
-          <div>
-            <span className="tag">Área administrativa</span>
-            <h1>Precifica Brechó</h1>
-            <p>Olá! Vamos precificar seus produtos com inteligência.</p>
-          </div>
-        </header>
-
-        <button
-          type="button"
-          className="primary-bar"
-          onClick={() => setIsPricingOpen(true)}
-        >
-          + Precificar nova peça
-        </button>
-
-        <section className="admin-simple-kpis">
-          {kpis.map((kpi) => (
-            <article key={kpi.label} className="card simple-kpi">
-              <div className="simple-kpi-value">{kpi.value}</div>
-              <div className="simple-kpi-label">{kpi.label}</div>
-            </article>
-          ))}
-        </section>
-
-        <section className="card simple-table">
-          <header className="simple-table-header">
-            <h2>Produtos</h2>
-            <div className="filters">
-              <span className="chip active">Todos</span>
-              <span className="chip">Roupas</span>
-              <span className="chip">Calçados</span>
-              <span className="chip">Bolsas</span>
-            </div>
-          </header>
-          <div className="table-wrapper">
-            <table>
-              <thead>
-                <tr>
-                  <th>Produto</th>
-                  <th>Categoria</th>
-                  <th>Condição</th>
-                  <th>Custo</th>
-                  <th>Preço sugerido</th>
-                  <th>Lucro</th>
-                </tr>
-              </thead>
-              <tbody>
-                {items.map((item) => (
-                  <tr key={item.name}>
-                    <td>{item.name}</td>
-                    <td>{item.category}</td>
-                    <td>{item.condition}</td>
-                    <td>{item.cost}</td>
-                    <td>{item.suggested}</td>
-                    <td className="profit">{item.margin}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
-
-        <section className="card empty-state">
-          <div className="empty-icon">◻︎</div>
-          <h3>Ainda não há produtos</h3>
-          <p>
-            Comece cadastrando sua primeira peça para receber uma precificação
-            inteligente.
-          </p>
-        </section>
+        <AdminHeader onOpenPricing={() => setIsPricingOpen(true)} />
+        <AdminKpis kpis={kpis} />
+        <AdminTable items={items} />
+        <EmptyState />
       </div>
 
-      {isPricingOpen && (
-        <div
-          className="modal-backdrop"
-          onClick={() => setIsPricingOpen(false)}
-        >
-          <div
-            className="modal"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <header className="modal-header">
-              <div>
-                <span className="tag">Precificação</span>
-                <h2>Nova peça</h2>
-              </div>
-              <button
-                type="button"
-                className="secondary"
-                onClick={() => setIsPricingOpen(false)}
-              >
-                Fechar
-              </button>
-            </header>
-            <PriceCalculator variant="compact" />
-          </div>
-        </div>
-      )}
+      <PricingModal
+        isOpen={isPricingOpen}
+        onClose={() => setIsPricingOpen(false)}
+      />
     </main>
   );
 }
